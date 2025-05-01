@@ -339,7 +339,7 @@ aws ec2 describe-instances \
   --query "Reservations[*].Instances[*].State.Name"
 
 ```
-# DELETE RDS MySQL Instance
+### DELETE RDS MySQL Instance
 ```bash
 # Skip Final Snapshot (for dev/test)
 aws rds delete-db-instance \
