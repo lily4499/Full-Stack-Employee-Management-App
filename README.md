@@ -299,7 +299,7 @@ Go to the Network tab.
 Refresh the page (F5) and watch for API calls being made to the backend:  
  - Look for a request like:  
 ```bash
-GET https://spring.lilianedevops.online/api/employees
+GET https://spring.lilianedevops.online/employees
 ```
  - Status should be 200 OK.  
 Click on the request to view details:  
