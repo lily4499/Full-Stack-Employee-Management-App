@@ -35,10 +35,28 @@ employee-app/
 
 **Purpose:** Set up a clean Ubuntu server for hosting backend and frontend.
 
-```bash
 # Create Ubuntu 22.04 VM (AWS EC2, DigitalOcean, etc.)
+```bash
+# Launch instance
+aws ec2 run-instances \
+  --image-id "ami-0c7217cdde317cfec" \
+  --instance-type "t2.micro" \
+  --key-name  "ec2-devops-key" \
+  --security-groups "sg-091906568d27d3894" \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=DevOps-Server}]' \
+  --query 'Instances[0].InstanceId'
+
+# Get Public IP of Instance
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output text
+
+# SSH Into the Instance
+ssh -i /home/lilia/ec2.pem ubuntu@<PUBLIC_IP>
+```
 
 # Add a new non-root user
+```bash
 adduser spring
 usermod -aG sudo spring
 su - spring
@@ -123,6 +141,40 @@ sudo systemctl start spring.service
    - Port
    - DB name
    - Username/password
+### Set Variables
+```bash
+DB_IDENTIFIER="employee-db"
+DB_NAME="employees"
+DB_USERNAME="adminuser"
+DB_PASSWORD="abc123abc!"
+DB_INSTANCE_CLASS="db.t3.micro"
+DB_ENGINE="mysql"
+DB_ALLOCATED_STORAGE=20
+DB_REGION="us-east-1"
+```
+### Create RDS MySQL Instance
+```bash
+aws rds create-db-instance \
+  --db-instance-identifier $DB_IDENTIFIER \
+  --db-name $DB_NAME \
+  --engine $DB_ENGINE \
+  --master-username $DB_USERNAME \
+  --master-user-password $DB_PASSWORD \
+  --db-instance-class $DB_INSTANCE_CLASS \
+  --allocated-storage $DB_ALLOCATED_STORAGE \
+  --backup-retention-period 7 \
+  --publicly-accessible \
+  --region $DB_REGION
+```
+### Describe and Output Key Details
+```bash
+aws rds describe-db-instances \
+  --db-instance-identifier $DB_IDENTIFIER \
+  --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,DBName:DBName,Username:MasterUsername}" \
+  --output table
+```
+> DB_IDENTIFIER: name for managing the RDS instance itself.
+> DB_NAME: the actual database schema you connect to.
 
 **➡️ Edit `application.properties`:**
 
@@ -227,7 +279,7 @@ nano EmployeeService.js
 Update:
 
 ```js
-const EMPLOYEE_API_BASE_URL = "https://spring.lilianedevops.online/api/employees";
+const BASE_URL = "https://spring.lilianedevops.online/employees";
 ```
 
 ---
@@ -271,3 +323,38 @@ Click on the request to view details:
 
 ---
 
+# Clean-Up
+### DELETE EC2 Instance
+```bash
+# Find Instance ID
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].{ID:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value}" \
+  --output table
+# Terminate EC2 Instance
+aws ec2 terminate-instances \
+  --instance-ids i-xxxxxxxxxxxxxxxxx
+# Wait until status is terminated:
+aws ec2 describe-instances \
+  --instance-ids i-xxxxxxxxxxxxxxxxx \
+  --query "Reservations[*].Instances[*].State.Name"
+
+```
+# DELETE RDS MySQL Instance
+```bash
+# Skip Final Snapshot (for dev/test)
+aws rds delete-db-instance \
+  --db-instance-identifier employee-db \
+  --skip-final-snapshot \
+  --delete-automated-backups
+#  If you want a final snapshot for backup:
+aws rds delete-db-instance \
+  --db-instance-identifier employee-db \
+  --final-db-snapshot-identifier employee-db-final-snapshot
+# Monitor Deletion
+aws rds describe-db-instances \
+  --db-instance-identifier employee-db \
+  --query "DBInstances[0].DBInstanceStatus"
+
+```
+
+---
