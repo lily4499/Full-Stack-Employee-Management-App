@@ -290,23 +290,21 @@ const BASE_URL = "https://spring.lilianedevops.online/employees";
 - ✅ Visit `https://spring.lilianedevops.online` → Backend API accessible
 - ✅ Confirm frontend connects to backend via browser Dev Tools
 
-🧪 Steps to confirm Frontend ↔ Backend Connection:
-Open the frontend app in your browser:  
-https://lilianedevops.online
-Open Developer Tools:  
-Press F12 or Ctrl + Shift + I (or right-click → "Inspect").  
-Go to the Network tab.  
-Refresh the page (F5) and watch for API calls being made to the backend:
- - Look for a request like:
-```GET https://spring.lilianedevops.online/api/employees
+🧪 Steps to confirm Frontend ↔ Backend Connection:  
+Open the frontend app in your browser:    
+https://lilianedevops.online  
+Open Developer Tools:    
+Press F12 or Ctrl + Shift + I (or right-click → "Inspect").    
+Go to the Network tab.    
+Refresh the page (F5) and watch for API calls being made to the backend:  
+ - Look for a request like:  
+```bash
+GET https://spring.lilianedevops.online/api/employees
 ```
- - Status should be 200 OK.
-
-Click on the request to view details:
- - Check the Response tab to verify that data (JSON list of employees) is returned.
- - Check the Headers tab to confirm it’s connecting to the backend domain.
-
-
+ - Status should be 200 OK.  
+Click on the request to view details:  
+ - Check the Response tab to verify that data (JSON list of employees) is returned.  
+ - Check the Headers tab to confirm it’s connecting to the backend domain.  
 
 ---
 
@@ -330,9 +328,11 @@ Click on the request to view details:
 aws ec2 describe-instances \
   --query "Reservations[*].Instances[*].{ID:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value}" \
   --output table
+
 # Terminate EC2 Instance
 aws ec2 terminate-instances \
   --instance-ids i-xxxxxxxxxxxxxxxxx
+
 # Wait until status is terminated:
 aws ec2 describe-instances \
   --instance-ids i-xxxxxxxxxxxxxxxxx \
@@ -346,10 +346,12 @@ aws rds delete-db-instance \
   --db-instance-identifier employee-db \
   --skip-final-snapshot \
   --delete-automated-backups
+
 #  If you want a final snapshot for backup:
 aws rds delete-db-instance \
   --db-instance-identifier employee-db \
   --final-db-snapshot-identifier employee-db-final-snapshot
+
 # Monitor Deletion
 aws rds describe-db-instances \
   --db-instance-identifier employee-db \
