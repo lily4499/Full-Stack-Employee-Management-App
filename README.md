@@ -173,7 +173,7 @@ aws rds describe-db-instances \
   --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,DBName:DBName,Username:MasterUsername}" \
   --output table
 ```
-> DB_IDENTIFIER: name for managing the RDS instance itself.
+> DB_IDENTIFIER: name for managing the RDS instance itself.  
 > DB_NAME: the actual database schema you connect to.
 
 **➡️ Edit `application.properties`:**
