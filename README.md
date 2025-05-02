@@ -2,16 +2,18 @@
 # 🚀 Employee Management App – Production Deployment Guide
 
 ## 🌍 Real-World Scenario
+> As a DevOps Engineer at a mid-sized HR software company, I was tasked with deploying a production-ready **Employee Management System** used by internal HR teams to manage staff records and onboarding. The solution involved a Spring Boot backend and React frontend, both hosted on a secured Ubuntu EC2 instance, with data stored in a scalable Amazon RDS MySQL database. I automated the setup of system services, configured NGINX for reverse proxy and frontend delivery, and secured all traffic using SSL certificates from Let's Encrypt. This project demonstrates a fully functional, end-to-end deployment pipeline using cloud-native tools and production best practices.
 
-You’re a DevOps Engineer deploying a full-stack **Employee Management System** consisting of:
+---
+## Objective
+
+Deploying a full-stack **Employee Management System** consisting of:
 
 - 🖥️ A Spring Boot backend (Java)
 - 💻 A React frontend (Node.js)
 - 🗄️ A MySQL database (AWS RDS)
 - 🌐 A production web server (NGINX on Ubuntu)
 - 🔐 SSL with Let's Encrypt (Certbot)
-
-This guide walks you through deploying the **entire stack to production**, step-by-step.
 
 ---
 
